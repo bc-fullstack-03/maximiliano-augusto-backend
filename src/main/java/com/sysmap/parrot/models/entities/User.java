@@ -31,11 +31,10 @@ public class User {
 
     }
 
-    public User(String name, String email, String password){
+    public User(String name, String email){
         setId();
         this.name = name;
         this.email = email;
-        this.password = password;
         this.profilePictureUrl = " ";
         this.following = new ArrayList<UUID>();
         this.followers = new ArrayList<UUID>();

@@ -5,6 +5,7 @@ import com.sysmap.parrot.data.IUserRepository;
 import com.sysmap.parrot.models.embedded.Feed;
 import com.sysmap.parrot.models.entities.Post;
 import com.sysmap.parrot.models.entities.User;
+import com.sysmap.parrot.services.security.IJwtService;
 import com.sysmap.parrot.services.user.IUserService;
 import com.sysmap.parrot.services.user.dto.CreateUserRequest;
 import com.sysmap.parrot.services.user.dto.FollowUserRequest;
@@ -13,22 +14,34 @@ import com.sysmap.parrot.services.user.dto.UpdateUserRequest;
 import com.sysmap.parrot.services.user.dto.embedded.ReadFeedResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class UserService implements IUserService {
 
     @Autowired
     private IUserRepository _userRepository;
+
     @Autowired
-    private IPostRepository _postsRepository;
+    private IJwtService _jwtService;
+
+    @Autowired
+    private PasswordEncoder _passwordEncoder;
+
+    @Autowired
+    private IPostRepository _postsRepository; //Mudar e utilizar apenas as funções de IPostService
+
     public String createUser(CreateUserRequest request){
-        var user = new User(request.name, request.email, request.password);
+        var user = new User(request.name, request.email);
+
+        var hash = _passwordEncoder.encode(request.password);
+
+        user.setPassword(hash);
 
         _userRepository.save(user);
 
@@ -103,6 +116,10 @@ public class UserService implements IUserService {
         _userRepository.deleteById(userId);
 
         return ResponseEntity.ok("User Deleted Successfully").toString();
+    }
+
+    public User getUser(String email){
+        return _userRepository.findByEmail(email).get();
     }
 
     public String followUser(FollowUserRequest request){

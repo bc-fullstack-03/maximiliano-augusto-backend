@@ -1,6 +1,7 @@
 package com.sysmap.parrot.services.user;
 
 import com.sysmap.parrot.models.entities.Post;
+import com.sysmap.parrot.models.entities.User;
 import com.sysmap.parrot.services.user.dto.FollowUserRequest;
 import com.sysmap.parrot.services.user.dto.ReadUserResponse;
 import com.sysmap.parrot.services.user.dto.CreateUserRequest;
@@ -23,4 +24,5 @@ public interface IUserService {
     void generateUserFeed(UUID id);
     ArrayList<Post> generateUserFeedList(ArrayList<UUID> following, List<Post> posts);
     ReadFeedResponse getUserFeed(UUID id);
+    User getUser(String email);
 }
