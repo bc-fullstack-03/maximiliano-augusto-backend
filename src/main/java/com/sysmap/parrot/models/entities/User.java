@@ -21,7 +21,7 @@ public class User {
     @Field
     private String password;
     @Field
-    private String profilePictureUrl;
+    private String photoUrl;
     @Field
     private ArrayList<UUID> following;
     @Field
@@ -35,7 +35,7 @@ public class User {
         setId();
         this.name = name;
         this.email = email;
-        this.profilePictureUrl = " ";
+        this.photoUrl = " ";
         this.following = new ArrayList<UUID>();
         this.followers = new ArrayList<UUID>();
     }

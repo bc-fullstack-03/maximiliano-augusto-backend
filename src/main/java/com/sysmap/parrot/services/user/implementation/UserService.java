@@ -5,6 +5,7 @@ import com.sysmap.parrot.data.IUserRepository;
 import com.sysmap.parrot.models.embedded.Feed;
 import com.sysmap.parrot.models.entities.Post;
 import com.sysmap.parrot.models.entities.User;
+import com.sysmap.parrot.services.fileUpload.IFileUploadService;
 import com.sysmap.parrot.services.security.IJwtService;
 import com.sysmap.parrot.services.user.IUserService;
 import com.sysmap.parrot.services.user.dto.CreateUserRequest;
@@ -14,10 +15,12 @@ import com.sysmap.parrot.services.user.dto.UpdateUserRequest;
 import com.sysmap.parrot.services.user.dto.embedded.ReadFeedResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -28,10 +31,10 @@ public class UserService implements IUserService {
     private IUserRepository _userRepository;
 
     @Autowired
-    private IJwtService _jwtService;
+    private PasswordEncoder _passwordEncoder;
 
     @Autowired
-    private PasswordEncoder _passwordEncoder;
+    private IFileUploadService _fileUploadService;
 
     @Autowired
     private IPostRepository _postsRepository; //Mudar e utilizar apenas as funções de IPostService
@@ -120,6 +123,23 @@ public class UserService implements IUserService {
 
     public User getUser(String email){
         return _userRepository.findByEmail(email).get();
+    }
+
+    public void uploadPhotoProfile(MultipartFile photo) throws Exception{
+        var user = ((User) SecurityContextHolder.getContext().getAuthentication());
+
+        var photoUrl = " ";
+
+        try {
+            var fileName = user.getId() + "." + photo.getOriginalFilename().substring(photo.getOriginalFilename().lastIndexOf(".") + 1);
+
+            photoUrl = _fileUploadService.upload(photo, fileName);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+
+        user.setPhotoUrl(photoUrl);
+        _userRepository.save(user);
     }
 
     public String followUser(FollowUserRequest request){

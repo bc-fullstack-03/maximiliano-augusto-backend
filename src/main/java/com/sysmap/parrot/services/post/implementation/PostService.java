@@ -31,7 +31,7 @@ public class PostService implements IPostService {
         UUID id = UUID.fromString(request.authorId);
         User user = _userRepository.findById(id).get();
 
-        Author author = new Author(user.getId(), user.getName(), user.getProfilePictureUrl());
+        Author author = new Author(user.getId(), user.getName(), user.getPhotoUrl());
 
         var post = new Post(author, request.pictureUrl, request.body, new Date());
 
@@ -60,7 +60,7 @@ public class PostService implements IPostService {
     public String addComment(AddCommentRequest request){
         User user = _userRepository.findById(request.authorId).get();
 
-        Author author = new Author(user.getId(), user.getName(), user.getProfilePictureUrl());
+        Author author = new Author(user.getId(), user.getName(), user.getPhotoUrl());
 
         Comment comment = new Comment(author, request.text);
 
@@ -76,7 +76,7 @@ public class PostService implements IPostService {
     public String addLike(AddLikeRequest request){
         User user = _userRepository.findById(request.authorId).get();
 
-        Author author = new Author(user.getId(), user.getName(), user.getProfilePictureUrl());
+        Author author = new Author(user.getId(), user.getName(), user.getPhotoUrl());
 
         Like like = new Like(author, request.liked);
 
