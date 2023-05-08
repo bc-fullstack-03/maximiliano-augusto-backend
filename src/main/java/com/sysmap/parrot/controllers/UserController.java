@@ -1,17 +1,17 @@
 package com.sysmap.parrot.controllers;
 
 import com.sysmap.parrot.services.user.dto.CreateUserRequest;
-import com.sysmap.parrot.services.user.IUserService;
+import com.sysmap.parrot.services.user.implementation.IUserService;
 import com.sysmap.parrot.services.user.dto.FollowUserRequest;
 import com.sysmap.parrot.services.user.dto.ReadUserResponse;
 import com.sysmap.parrot.services.user.dto.UpdateUserRequest;
-import com.sysmap.parrot.services.user.dto.embedded.ReadFeedResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 @RestController
@@ -67,23 +67,23 @@ public class UserController {
         }
     }
 
-    @PostMapping("/follow")
+    @PostMapping("/follows/follow")
     public ResponseEntity<String> followUser(@RequestBody FollowUserRequest request){
         var response = _userService.followUser(request);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
 
-    @PostMapping("/unfollow")
+    @PostMapping("/follows/unfollow")
     public ResponseEntity<String> unfollowUser(@RequestBody FollowUserRequest request){
         var response = _userService.unfollowUser(request);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
 
-    @GetMapping("/feed/{id}")
-    public ResponseEntity<ReadFeedResponse> getUserFeed(@PathVariable("id") UUID id){
-        var response = _userService.getUserFeed(id);
+    @GetMapping("/follows/followingList/{id}")
+    public ResponseEntity<ArrayList> getFollowingList(@PathVariable("id") UUID id){
+        var response = _userService.getFollowingList(id);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }

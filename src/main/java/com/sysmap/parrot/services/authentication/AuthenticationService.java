@@ -3,7 +3,7 @@ package com.sysmap.parrot.services.authentication;
 import com.sysmap.parrot.services.security.IJwtService;
 import com.sysmap.parrot.services.authentication.dto.AuthenticateRequest;
 import com.sysmap.parrot.services.authentication.dto.AuthenticateResponse;
-import com.sysmap.parrot.services.user.IUserService;
+import com.sysmap.parrot.services.user.implementation.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

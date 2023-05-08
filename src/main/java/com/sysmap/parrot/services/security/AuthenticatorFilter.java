@@ -1,6 +1,6 @@
 package com.sysmap.parrot.services.security;
 
-import com.sysmap.parrot.services.user.IUserService;
+import com.sysmap.parrot.services.user.implementation.IUserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

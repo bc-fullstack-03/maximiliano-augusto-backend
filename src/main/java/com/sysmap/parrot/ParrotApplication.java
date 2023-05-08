@@ -1,6 +1,5 @@
 package com.sysmap.parrot;
 
-import org.apache.kafka.common.config.types.Password;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;

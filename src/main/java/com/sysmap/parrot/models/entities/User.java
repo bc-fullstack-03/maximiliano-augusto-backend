@@ -22,10 +22,6 @@ public class User {
     private String password;
     @Field
     private String photoUrl;
-    @Field
-    private ArrayList<UUID> following;
-    @Field
-    private ArrayList<UUID> followers;
     private Feed feed;
     public User(){
 
@@ -36,8 +32,6 @@ public class User {
         this.name = name;
         this.email = email;
         this.photoUrl = " ";
-        this.following = new ArrayList<UUID>();
-        this.followers = new ArrayList<UUID>();
     }
 
     protected void setId() {
@@ -46,20 +40,5 @@ public class User {
 
     public UUID getId() {
         return  this.id;
-    }
-    public void addFollower(UUID id){
-        this.followers.add(id);
-    }
-
-    public void addFollowed(UUID id){
-        this.following.add(id);
-    }
-
-    public void removeFollower(UUID id){
-        this.followers.remove(id);
-    }
-
-    public void removeFollowed(UUID id){
-        this.following.remove(id);
     }
 }

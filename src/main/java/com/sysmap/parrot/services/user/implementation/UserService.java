@@ -6,20 +6,17 @@ import com.sysmap.parrot.models.embedded.Feed;
 import com.sysmap.parrot.models.entities.Post;
 import com.sysmap.parrot.models.entities.User;
 import com.sysmap.parrot.services.fileUpload.IFileUploadService;
-import com.sysmap.parrot.services.security.IJwtService;
-import com.sysmap.parrot.services.user.IUserService;
 import com.sysmap.parrot.services.user.dto.CreateUserRequest;
 import com.sysmap.parrot.services.user.dto.FollowUserRequest;
 import com.sysmap.parrot.services.user.dto.ReadUserResponse;
 import com.sysmap.parrot.services.user.dto.UpdateUserRequest;
 import com.sysmap.parrot.services.user.dto.embedded.ReadFeedResponse;
+import com.sysmap.parrot.services.user.embedded.IFollowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
@@ -29,20 +26,19 @@ public class UserService implements IUserService {
 
     @Autowired
     private IUserRepository _userRepository;
-
     @Autowired
     private PasswordEncoder _passwordEncoder;
-
     @Autowired
     private IFileUploadService _fileUploadService;
-
     @Autowired
-    private IPostRepository _postsRepository; //Mudar e utilizar apenas as funções de IPostService
+    private IFollowService _followService;
 
     public String createUser(CreateUserRequest request){
         var user = new User(request.name, request.email);
 
         var hash = _passwordEncoder.encode(request.password);
+
+        _followService.createFollow(user.getId());
 
         user.setPassword(hash);
 
@@ -56,12 +52,7 @@ public class UserService implements IUserService {
 
         var user = _userRepository.findById(uuid).get();
 
-        var response = new ReadUserResponse(
-                            user.getId(),
-                            user.getName(),
-                            user.getEmail(),
-                            user.getFollowers(),
-                            user.getFollowing());
+        var response = new ReadUserResponse(user.getId(), user.getName(), user.getEmail());
 
         return response;
     }
@@ -69,12 +60,7 @@ public class UserService implements IUserService {
     public ReadUserResponse readUserByEmail(String email){
         var user = _userRepository.findByEmail(email).get();
 
-        var response = new ReadUserResponse(
-                user.getId(),
-                user.getName(),
-                user.getEmail(),
-                user.getFollowers(),
-                user.getFollowing());
+        var response = new ReadUserResponse(user.getId(), user.getName(), user.getEmail());
 
         return response;
     }
@@ -82,12 +68,7 @@ public class UserService implements IUserService {
     public ReadUserResponse readUserByName(String name){
         var user = _userRepository.findByName(name).get();
 
-        var response = new ReadUserResponse(
-                user.getId(),
-                user.getName(),
-                user.getEmail(),
-                user.getFollowers(),
-                user.getFollowing());
+        var response = new ReadUserResponse(user.getId(), user.getName(), user.getEmail());
 
         return response;
     }
@@ -103,12 +84,7 @@ public class UserService implements IUserService {
 
         _userRepository.save(user);
 
-        var response = new ReadUserResponse(
-                user.getId(),
-                user.getName(),
-                user.getEmail(),
-                user.getFollowers(),
-                user.getFollowing());
+        var response = new ReadUserResponse(user.getId(), user.getName(), user.getEmail());
 
         return response;
     }
@@ -143,32 +119,25 @@ public class UserService implements IUserService {
     }
 
     public String followUser(FollowUserRequest request){
-        User myUser = _userRepository.findById(request.myUserId).get();
-        User targetUser = _userRepository.findById(request.targetUserId).get();
+        _followService.followUser(request.myUserId, request.targetUserId);
 
-        myUser.addFollowed(request.targetUserId);
-        targetUser.addFollower(request.myUserId);
-
-        _userRepository.save(myUser);
-        _userRepository.save(targetUser);
-
-        return ResponseEntity.ok("User Followed Successfully").toString();
+        return "User Followed Successfully";
     }
 
     public String unfollowUser(FollowUserRequest request){
-        User myUser = _userRepository.findById(request.myUserId).get();
-        User targetUser = _userRepository.findById(request.targetUserId).get();
+        _followService.unfollowUser(request.myUserId, request.targetUserId);
 
-        myUser.removeFollowed(request.targetUserId);
-        targetUser.removeFollower(request.myUserId);
-
-        _userRepository.save(myUser);
-        _userRepository.save(targetUser);
-
-        return ResponseEntity.ok("User Unfollowed").toString();
+        return "User Unfollowed Successfully";
     }
 
-    public ReadFeedResponse getUserFeed(UUID id){
+    public ArrayList<UUID> getFollowingList(UUID userId){
+
+        var response = _followService.getFollowList(userId);
+
+        return response;
+    }
+
+    /*public ReadFeedResponse getUserFeed(UUID id){
         User user = _userRepository.findById(id).get();
 
         generateUserFeed(user.getId());
@@ -206,6 +175,6 @@ public class UserService implements IUserService {
         Collections.sort(response);
 
         return response;
-    }
+    }*/
 
 }

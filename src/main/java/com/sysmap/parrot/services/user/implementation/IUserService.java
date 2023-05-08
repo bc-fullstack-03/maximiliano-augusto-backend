@@ -1,16 +1,13 @@
-package com.sysmap.parrot.services.user;
+package com.sysmap.parrot.services.user.implementation;
 
-import com.sysmap.parrot.models.entities.Post;
 import com.sysmap.parrot.models.entities.User;
 import com.sysmap.parrot.services.user.dto.FollowUserRequest;
 import com.sysmap.parrot.services.user.dto.ReadUserResponse;
 import com.sysmap.parrot.services.user.dto.CreateUserRequest;
 import com.sysmap.parrot.services.user.dto.UpdateUserRequest;
-import com.sysmap.parrot.services.user.dto.embedded.ReadFeedResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public interface IUserService {
@@ -20,11 +17,9 @@ public interface IUserService {
     ReadUserResponse readUserByName(String name);
     ReadUserResponse updateUser(UpdateUserRequest request);
     String deleteUser(String id);
-    String followUser(FollowUserRequest request);
-    String unfollowUser(FollowUserRequest request);
-    void generateUserFeed(UUID id);
-    ArrayList<Post> generateUserFeedList(ArrayList<UUID> following, List<Post> posts);
-    ReadFeedResponse getUserFeed(UUID id);
     User getUser(String email);
     public void uploadPhotoProfile(MultipartFile photo) throws Exception;
+    public String followUser(FollowUserRequest request);
+    public String unfollowUser(FollowUserRequest request);
+    public ArrayList<UUID> getFollowingList(UUID userId);
 }
