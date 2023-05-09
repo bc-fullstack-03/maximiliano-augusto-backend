@@ -12,11 +12,11 @@ import java.util.UUID;
 
 public interface IUserService {
     String createUser(CreateUserRequest request);
-    ReadUserResponse readUserById(String id);
-    ReadUserResponse readUserByEmail(String id);
+    ReadUserResponse readUserById(UUID id);
+    ReadUserResponse readUserByEmail(String email);
     ReadUserResponse readUserByName(String name);
     ReadUserResponse updateUser(UpdateUserRequest request);
-    String deleteUser(String id);
+    String deleteUser(UUID id);
     User getUser(String email);
     public void uploadPhotoProfile(MultipartFile photo) throws Exception;
     public String followUser(FollowUserRequest request);

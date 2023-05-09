@@ -5,10 +5,13 @@ import com.sysmap.parrot.services.post.dto.CreatePostRequest;
 import com.sysmap.parrot.services.post.dto.ReadPostResponse;
 import com.sysmap.parrot.services.post.dto.embedded.AddCommentRequest;
 import com.sysmap.parrot.services.post.dto.embedded.AddLikeRequest;
-import com.sysmap.parrot.services.user.dto.ReadUserResponse;
+import com.sysmap.parrot.models.entities.Post;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/posts")
@@ -17,10 +20,8 @@ public class PostController {
     @Autowired
     private IPostService _postService;
 
-
-
     @PostMapping
-    public ResponseEntity<String> createUser(@RequestBody CreatePostRequest request){
+    public ResponseEntity<String> createPost(@RequestBody CreatePostRequest request){
         var response = _postService.createPost(request);
 
         return ResponseEntity.ok().body(response);
@@ -44,6 +45,12 @@ public class PostController {
     public ResponseEntity<String> addLike(@RequestBody AddLikeRequest request){
         var response = _postService.addLike(request);
 
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<Object> getAllPosts(){
+        List<Post> response = _postService.getAllPosts();
         return ResponseEntity.ok().body(response);
     }
 }

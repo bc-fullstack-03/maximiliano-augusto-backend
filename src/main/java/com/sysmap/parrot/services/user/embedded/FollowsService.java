@@ -14,24 +14,30 @@ public class FollowsService implements IFollowService{
     @Autowired
     private IFollowsRepository _followsRepository;
 
-    public void followUser(UUID id, UUID targetId){
-        var follows = _followsRepository.findById(id).get();
-
-        if(!follows.getFollowing().contains(targetId)){
-            follows.getFollowing().add(targetId);
-        }
-
-        _followsRepository.save(follows);
-    }
-
-    public void unfollowUser(UUID id, UUID targetId){
+    public String followUser(UUID id, UUID targetId){
         var follows = _followsRepository.findById(id).get();
 
         if(follows.getFollowing().contains(targetId)){
-            follows.getFollowing().remove(targetId);
+            return "Following This User";
         }
 
+        follows.getFollowing().add(targetId);
         _followsRepository.save(follows);
+
+        return "User Followed Successfully";
+    }
+
+    public String unfollowUser(UUID id, UUID targetId){
+        var follows = _followsRepository.findById(id).get();
+
+        if(!follows.getFollowing().contains(targetId)){
+            return "You Dont Follow This User";
+        }
+
+        follows.getFollowing().remove(targetId);
+        _followsRepository.save(follows);
+
+        return "User Success Unfollowed";
     }
 
     public void createFollow(UUID id){

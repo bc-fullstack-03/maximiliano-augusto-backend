@@ -1,11 +1,9 @@
 package com.sysmap.parrot.services.post.implementation;
 
 import com.sysmap.parrot.data.IPostRepository;
-import com.sysmap.parrot.data.IUserRepository;
 import com.sysmap.parrot.models.embedded.Author;
 import com.sysmap.parrot.models.embedded.Comment;
 import com.sysmap.parrot.models.embedded.Like;
-import com.sysmap.parrot.models.entities.User;
 import com.sysmap.parrot.models.entities.Post;
 import com.sysmap.parrot.services.post.IPostService;
 import com.sysmap.parrot.services.post.dto.CreatePostRequest;
@@ -15,9 +13,11 @@ import com.sysmap.parrot.services.post.dto.embedded.AddLikeRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import com.sysmap.parrot.services.user.implementation.IUserService;
 
 import java.util.Date;
 import java.util.UUID;
+import java.util.List;
 
 @Service
 public class PostService implements IPostService {
@@ -25,15 +25,10 @@ public class PostService implements IPostService {
     @Autowired
     private IPostRepository _postsRepository;
     @Autowired
-    private IUserRepository _userRepository;
+    private IUserService _userService;
 
     public String createPost(CreatePostRequest request) {
-        UUID id = UUID.fromString(request.authorId);
-        User user = _userRepository.findById(id).get();
-
-        Author author = new Author(user.getId(), user.getName(), user.getPhotoUrl());
-
-        var post = new Post(author, request.pictureUrl, request.body, new Date());
+        var post = new Post(request.authorId, request.pictureUrl, request.body, new Date());
 
         _postsRepository.save(post);
 
@@ -49,7 +44,7 @@ public class PostService implements IPostService {
                             post.getId(),
                             post.getPictureUrl(),
                             post.getBody(),
-                            post.getAuthor(),
+                            post.getAuthorId(),
                             post.getDate(),
                             post.getComments(),
                             post.getLikes());
@@ -57,8 +52,12 @@ public class PostService implements IPostService {
         return response;
     }
 
+    public List<Post> getAllPosts(){
+        return _postsRepository.findAll();
+    }
+
     public String addComment(AddCommentRequest request){
-        User user = _userRepository.findById(request.authorId).get();
+        var user = _userService.readUserById(request.authorId);
 
         Author author = new Author(user.getId(), user.getName(), user.getPhotoUrl());
 
@@ -70,11 +69,11 @@ public class PostService implements IPostService {
 
         _postsRepository.save(post);
 
-        return ResponseEntity.ok("Comment Added Successfully").toString();
+        return "Comment Added Successfully";
     }
 
     public String addLike(AddLikeRequest request){
-        User user = _userRepository.findById(request.authorId).get();
+        var user = _userService.readUserById(request.authorId);
 
         Author author = new Author(user.getId(), user.getName(), user.getPhotoUrl());
 
@@ -86,6 +85,6 @@ public class PostService implements IPostService {
 
         _postsRepository.save(post);
 
-        return ResponseEntity.ok("Post Liked Successfully").toString();
+        return "Post Liked Successfully";
     }
 }

@@ -1,6 +1,5 @@
 package com.sysmap.parrot.models.entities;
 
-import com.sysmap.parrot.models.embedded.Author;
 import com.sysmap.parrot.models.embedded.Comment;
 import com.sysmap.parrot.models.embedded.Like;
 import lombok.Data;
@@ -22,7 +21,7 @@ public class Post implements Comparable<Post>{
     @Field
     private String body;
     @Field
-    private Author author;
+    private UUID authorId;
     @Field
     public Date date;
     @Field
@@ -30,9 +29,9 @@ public class Post implements Comparable<Post>{
     @Field
     private ArrayList<Like> likes;
 
-    public Post(Author author, String pictureUrl, String body, Date date){
+    public Post(UUID authorId, String pictureUrl, String body, Date date){
         setId();
-        this.author = author;
+        this.authorId = authorId;
         this.pictureUrl = pictureUrl;
         this.body = body;
         this.date = date;

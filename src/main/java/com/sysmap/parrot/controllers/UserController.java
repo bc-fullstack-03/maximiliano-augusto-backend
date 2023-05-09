@@ -22,13 +22,8 @@ public class UserController {
     private IUserService _userService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ReadUserResponse> readUser(@PathVariable("id") String id){
+    public ResponseEntity<ReadUserResponse> readUser(@PathVariable("id") UUID id){
         return ResponseEntity.ok().body(_userService.readUserById(id));
-    }
-
-    @GetMapping("/login")
-    public ResponseEntity<ReadUserResponse> readUserByEmail(String email){
-        return ResponseEntity.ok().body(_userService.readUserByEmail(email));
     }
 
     @GetMapping
@@ -51,7 +46,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable("id") String id){
+    public ResponseEntity<String> deleteUser(@PathVariable("id") UUID id){
         var response = _userService.deleteUser(id);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);

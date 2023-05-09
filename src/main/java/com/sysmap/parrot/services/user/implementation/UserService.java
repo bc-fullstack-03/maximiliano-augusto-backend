@@ -1,16 +1,12 @@
 package com.sysmap.parrot.services.user.implementation;
 
-import com.sysmap.parrot.data.IPostRepository;
 import com.sysmap.parrot.data.IUserRepository;
-import com.sysmap.parrot.models.embedded.Feed;
-import com.sysmap.parrot.models.entities.Post;
 import com.sysmap.parrot.models.entities.User;
 import com.sysmap.parrot.services.fileUpload.IFileUploadService;
 import com.sysmap.parrot.services.user.dto.CreateUserRequest;
 import com.sysmap.parrot.services.user.dto.FollowUserRequest;
 import com.sysmap.parrot.services.user.dto.ReadUserResponse;
 import com.sysmap.parrot.services.user.dto.UpdateUserRequest;
-import com.sysmap.parrot.services.user.dto.embedded.ReadFeedResponse;
 import com.sysmap.parrot.services.user.embedded.IFollowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -47,12 +43,10 @@ public class UserService implements IUserService {
         return user.getId().toString();
     }
 
-    public ReadUserResponse readUserById(String id){
-        UUID uuid = UUID.fromString(id);
+    public ReadUserResponse readUserById(UUID id){
+        var user = _userRepository.findById(id).get();
 
-        var user = _userRepository.findById(uuid).get();
-
-        var response = new ReadUserResponse(user.getId(), user.getName(), user.getEmail());
+        var response = new ReadUserResponse(user.getId(), user.getName(), user.getEmail(), user.getPhotoUrl());
 
         return response;
     }
@@ -60,7 +54,7 @@ public class UserService implements IUserService {
     public ReadUserResponse readUserByEmail(String email){
         var user = _userRepository.findByEmail(email).get();
 
-        var response = new ReadUserResponse(user.getId(), user.getName(), user.getEmail());
+        var response = new ReadUserResponse(user.getId(), user.getName(), user.getEmail(), user.getPhotoUrl());
 
         return response;
     }
@@ -68,15 +62,13 @@ public class UserService implements IUserService {
     public ReadUserResponse readUserByName(String name){
         var user = _userRepository.findByName(name).get();
 
-        var response = new ReadUserResponse(user.getId(), user.getName(), user.getEmail());
+        var response = new ReadUserResponse(user.getId(), user.getName(), user.getEmail(), user.getPhotoUrl());
 
         return response;
     }
 
     public ReadUserResponse updateUser(UpdateUserRequest request){
-        UUID id = UUID.fromString(request.id);
-
-        User user = _userRepository.findById(id).get();
+        User user = _userRepository.findById(request.id).get();
 
         user.setName(request.name);
 
@@ -84,15 +76,14 @@ public class UserService implements IUserService {
 
         _userRepository.save(user);
 
-        var response = new ReadUserResponse(user.getId(), user.getName(), user.getEmail());
+        var response = new ReadUserResponse(user.getId(), user.getName(), user.getEmail(), user.getPhotoUrl());
 
         return response;
     }
 
-    public String deleteUser(String id){
-        UUID userId = UUID.fromString(id);
+    public String deleteUser(UUID id){
 
-        _userRepository.deleteById(userId);
+        _userRepository.deleteById(id);
 
         return ResponseEntity.ok("User Deleted Successfully").toString();
     }
@@ -119,15 +110,11 @@ public class UserService implements IUserService {
     }
 
     public String followUser(FollowUserRequest request){
-        _followService.followUser(request.myUserId, request.targetUserId);
-
-        return "User Followed Successfully";
+        return _followService.followUser(request.myUserId, request.targetUserId);
     }
 
     public String unfollowUser(FollowUserRequest request){
-        _followService.unfollowUser(request.myUserId, request.targetUserId);
-
-        return "User Unfollowed Successfully";
+        return _followService.unfollowUser(request.myUserId, request.targetUserId);
     }
 
     public ArrayList<UUID> getFollowingList(UUID userId){
@@ -136,45 +123,5 @@ public class UserService implements IUserService {
 
         return response;
     }
-
-    /*public ReadFeedResponse getUserFeed(UUID id){
-        User user = _userRepository.findById(id).get();
-
-        generateUserFeed(user.getId());
-
-        ReadFeedResponse response = new ReadFeedResponse(user.getFeed());
-
-        return response;
-    }
-
-    public void generateUserFeed(UUID id){
-        User user = _userRepository.findById(id).get();
-
-        var postsList = _postsRepository.findAll();
-
-        ArrayList<Post> posts = generateUserFeedList(user.getFollowing(), postsList);
-
-        Feed feed = new Feed(posts);
-
-        user.setFeed(feed);
-
-        _userRepository.save(user);
-    }
-
-    public ArrayList<Post> generateUserFeedList(ArrayList<UUID> following, List<Post> posts){
-        ArrayList<Post> response = new ArrayList<>();
-
-        for(UUID id : following){
-            for(Post post : posts){
-                if(post.getAuthor().getId().equals(id)){
-                    response.add(post);
-                }
-            }
-        }
-
-        Collections.sort(response);
-
-        return response;
-    }*/
 
 }

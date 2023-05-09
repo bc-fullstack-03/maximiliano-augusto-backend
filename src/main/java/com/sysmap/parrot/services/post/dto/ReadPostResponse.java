@@ -1,6 +1,5 @@
 package com.sysmap.parrot.services.post.dto;
 
-import com.sysmap.parrot.models.embedded.Author;
 import com.sysmap.parrot.models.embedded.Comment;
 import com.sysmap.parrot.models.embedded.Like;
 import lombok.Data;
@@ -16,7 +15,7 @@ public class ReadPostResponse {
 
     private String body;
 
-    private Author author;
+    private UUID authorId;
 
     private Date date;
 
@@ -24,12 +23,12 @@ public class ReadPostResponse {
 
     private ArrayList<Like> likes;
 
-    public ReadPostResponse(UUID id, String pictureUrl, String body, Author author, Date date,
+    public ReadPostResponse(UUID id, String pictureUrl, String body, UUID authorId, Date date,
                             ArrayList<Comment> comments, ArrayList<Like> likes){
         this.id = id;
         this.pictureUrl = pictureUrl;
         this.body = body;
-        this.author = author;
+        this.authorId = authorId;
         this.date = date;
         this.comments = comments;
         this.likes = likes;

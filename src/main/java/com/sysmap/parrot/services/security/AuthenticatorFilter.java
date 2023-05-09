@@ -12,6 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
+import java.util.UUID;
 
 import java.io.IOException;
 
@@ -41,7 +42,7 @@ public class AuthenticatorFilter extends OncePerRequestFilter {
         }
 
         var token = request.getHeader("Authorization");
-        var userId = request.getHeader("RequestBy");
+        var userId = request.getHeader("RequestedBy");
 
         if(token == null || userId == null || !token.startsWith("Bearer ")){
             response.getWriter().write("User not authenticated");
@@ -61,7 +62,7 @@ public class AuthenticatorFilter extends OncePerRequestFilter {
 
         if(isValidToken) {
             try {
-                var user = _userService.readUserById(userId);
+                var user = _userService.readUserById(UUID.fromString(userId));
 
                 var authentication = new UsernamePasswordAuthenticationToken(user, null, null);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
