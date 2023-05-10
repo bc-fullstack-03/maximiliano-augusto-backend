@@ -48,6 +48,13 @@ public class PostController {
 
         return ResponseEntity.ok().body(response);
     }
+    
+    @DeleteMapping("/comment")
+    public ResponseEntity<String> deleteComment(@RequestBody AddCommentRequest request){
+        var response = _postService.deleteComment(request);
+
+        return ResponseEntity.ok().body(response);
+    }
 
     @PostMapping("/like")
     public ResponseEntity<String> addLike(@RequestBody AddLikeRequest request){

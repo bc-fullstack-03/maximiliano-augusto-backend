@@ -15,6 +15,6 @@ public interface IPostService {
     public String deletePost(UUID id);
     public List<Post> getAllPosts();
     String addComment(AddCommentRequest request);
+    String deleteComment(AddCommentRequest request);
     String addLike(AddLikeRequest request);
-
 }

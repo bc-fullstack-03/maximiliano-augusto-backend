@@ -51,7 +51,7 @@ public class PostService implements IPostService {
     public String deletePost(UUID id){
         _postsRepository.deleteById(id);
 
-        return "Successfully deleted post";
+        return "Successfully Deleted Post";
     }
 
     public List<Post> getAllPosts(){
@@ -72,6 +72,22 @@ public class PostService implements IPostService {
         _postsRepository.save(post);
 
         return "Comment Added Successfully";
+    }
+
+    public String deleteComment(AddCommentRequest request){
+        var post = _postsRepository.findById(request.postId).get();
+        
+        var user = _userService.readUserById(request.authorId);
+
+        Author author = new Author(user.getId(), user.getName(), user.getPhotoUrl());
+
+        Comment comment = new Comment(author, request.text);
+
+        post.getComments().remove(comment);
+
+        _postsRepository.save(post);
+
+        return "Successfully Deleted Comment";
     }
 
     public String addLike(AddLikeRequest request){
