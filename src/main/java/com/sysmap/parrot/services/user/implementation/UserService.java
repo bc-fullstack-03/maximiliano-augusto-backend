@@ -3,6 +3,7 @@ package com.sysmap.parrot.services.user.implementation;
 import com.sysmap.parrot.data.IUserRepository;
 import com.sysmap.parrot.models.entities.User;
 import com.sysmap.parrot.services.fileUpload.IFileUploadService;
+import com.sysmap.parrot.services.event.IEventService;
 import com.sysmap.parrot.services.user.dto.CreateUserRequest;
 import com.sysmap.parrot.services.user.dto.FollowUserRequest;
 import com.sysmap.parrot.services.user.dto.ReadUserResponse;
@@ -23,6 +24,8 @@ public class UserService implements IUserService {
     @Autowired
     private IUserRepository _userRepository;
     @Autowired
+    private IEventService _eventService;
+    @Autowired
     private PasswordEncoder _passwordEncoder;
     @Autowired
     private IFileUploadService _fileUploadService;
@@ -39,6 +42,8 @@ public class UserService implements IUserService {
         user.setPassword(hash);
 
         _userRepository.save(user);
+
+        _eventService.send("A new user joined Sysmap Parrot, welcome " + user.getName());
 
         return user.getId().toString();
     }
