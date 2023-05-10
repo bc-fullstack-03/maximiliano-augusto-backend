@@ -98,7 +98,7 @@ public class UserService implements IUserService {
     }
 
     public void uploadPhotoProfile(MultipartFile photo) throws Exception{
-        var user = ((User) SecurityContextHolder.getContext().getAuthentication());
+        var user = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
         var photoUrl = " ";
 
