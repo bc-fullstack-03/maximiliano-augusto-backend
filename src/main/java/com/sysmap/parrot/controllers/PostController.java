@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/posts")
@@ -28,8 +29,15 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ReadPostResponse> readPost(@PathVariable("id") String id){
+    public ResponseEntity<ReadPostResponse> readPost(@PathVariable("id") UUID id){
         var response = _postService.getPost(id);
+
+        return ResponseEntity.ok().body(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deletePost(@PathVariable("id") UUID id){
+        var response = _postService.deletePost(id);
 
         return ResponseEntity.ok().body(response);
     }

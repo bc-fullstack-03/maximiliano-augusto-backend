@@ -7,10 +7,14 @@ import com.sysmap.parrot.services.post.dto.ReadPostResponse;
 import com.sysmap.parrot.services.post.dto.embedded.AddCommentRequest;
 import com.sysmap.parrot.services.post.dto.embedded.AddLikeRequest;
 
+import java.util.UUID;
+
 public interface IPostService {
     String createPost(CreatePostRequest request);
-    ReadPostResponse getPost(String id);
+    ReadPostResponse getPost(UUID id);
+    public String deletePost(UUID id);
     public List<Post> getAllPosts();
     String addComment(AddCommentRequest request);
     String addLike(AddLikeRequest request);
+
 }

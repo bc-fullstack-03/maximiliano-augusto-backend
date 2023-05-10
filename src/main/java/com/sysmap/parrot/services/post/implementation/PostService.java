@@ -33,10 +33,8 @@ public class PostService implements IPostService {
         return post.getId().toString();
     }
 
-    public ReadPostResponse getPost(String id){
-        UUID postId = UUID.fromString(id);
-
-        Post post = _postsRepository.findById(postId).get();
+    public ReadPostResponse getPost(UUID id){
+        Post post = _postsRepository.findById(id).get();
 
         var response = new ReadPostResponse(
                             post.getId(),
@@ -48,6 +46,12 @@ public class PostService implements IPostService {
                             post.getLikes());
 
         return response;
+    }
+
+    public String deletePost(UUID id){
+        _postsRepository.deleteById(id);
+
+        return "Successfully deleted post";
     }
 
     public List<Post> getAllPosts(){
@@ -78,14 +82,12 @@ public class PostService implements IPostService {
         Post post = _postsRepository.findById(request.postId).get();
 
         if(post.getLikes().contains(author)){
-
             post.getLikes().remove(author);
             _postsRepository.save(post);
-            return "Post Disliked";
-        }else{
-            post.addLike(author);
-        }
 
+            return "Post Disliked";
+        }            
+        post.addLike(author);
         _postsRepository.save(post);
 
         return "Post Liked Successfully";
