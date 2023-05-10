@@ -3,7 +3,6 @@ package com.sysmap.parrot.services.post.implementation;
 import com.sysmap.parrot.data.IPostRepository;
 import com.sysmap.parrot.models.embedded.Author;
 import com.sysmap.parrot.models.embedded.Comment;
-import com.sysmap.parrot.models.embedded.Like;
 import com.sysmap.parrot.models.entities.Post;
 import com.sysmap.parrot.services.post.IPostService;
 import com.sysmap.parrot.services.post.dto.CreatePostRequest;
@@ -11,7 +10,6 @@ import com.sysmap.parrot.services.post.dto.ReadPostResponse;
 import com.sysmap.parrot.services.post.dto.embedded.AddCommentRequest;
 import com.sysmap.parrot.services.post.dto.embedded.AddLikeRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.sysmap.parrot.services.user.implementation.IUserService;
 
@@ -77,11 +75,16 @@ public class PostService implements IPostService {
 
         Author author = new Author(user.getId(), user.getName(), user.getPhotoUrl());
 
-        Like like = new Like(author, request.liked);
-
         Post post = _postsRepository.findById(request.postId).get();
 
-        post.addLike(like);
+        if(post.getLikes().contains(author)){
+
+            post.getLikes().remove(author);
+            _postsRepository.save(post);
+            return "Post Disliked";
+        }else{
+            post.addLike(author);
+        }
 
         _postsRepository.save(post);
 

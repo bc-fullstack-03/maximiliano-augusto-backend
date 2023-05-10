@@ -1,7 +1,7 @@
 package com.sysmap.parrot.models.entities;
 
 import com.sysmap.parrot.models.embedded.Comment;
-import com.sysmap.parrot.models.embedded.Like;
+import com.sysmap.parrot.models.embedded.Author;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -27,7 +27,7 @@ public class Post implements Comparable<Post>{
     @Field
     private ArrayList<Comment> comments;
     @Field
-    private ArrayList<Like> likes;
+    private ArrayList<Author> likes;
 
     public Post(UUID authorId, String pictureUrl, String body, Date date){
         setId();
@@ -36,7 +36,7 @@ public class Post implements Comparable<Post>{
         this.body = body;
         this.date = date;
         comments = new ArrayList<Comment>();
-        likes = new ArrayList<Like>();
+        likes = new ArrayList<>();
     }
 
     public Post(){}
@@ -58,16 +58,16 @@ public class Post implements Comparable<Post>{
         return this.comments;
     }
 
-    public ArrayList<Like> getLikes(){
+    public ArrayList<Author> getLikes(){
         return this.likes;
     }
 
-    public void addLike(Like like){
-        this.likes.add(like);
+    public void addLike(Author author){
+        this.likes.add(author);
     }
 
-    public ArrayList<Like> removeLike(Like like){
-        this.likes.remove(like);
+    public ArrayList<Author> removeLike(Author author){
+        this.likes.remove(author);
         return this.likes;
     }
 

@@ -8,5 +8,4 @@ import java.util.UUID;
 public class AddLikeRequest {
     public UUID postId;
     public UUID authorId;
-    public boolean liked;
 }
